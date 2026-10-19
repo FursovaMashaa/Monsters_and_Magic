@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1425162659133544376}
   - component: {fileID: 3357200561434913572}
   - component: {fileID: 3671447362222324637}
+  - component: {fileID: 8204150775561725747}
   m_Layer: 5
   m_Name: JoystickBase
   m_TagString: Untagged
@@ -67,7 +68,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 2515522773753587476, guid: b0ef7dbaa9869ec4d9273f4caab006b8, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -91,6 +92,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Joystick
   handle: {fileID: 5972639378751522956}
   handleRadius: 45
+  canvasGroup: {fileID: 8204150775561725747}
+--- !u!225 &8204150775561725747
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1716573677219306225}
+  m_Enabled: 1
+  m_Alpha: 0
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
 --- !u!1 &7723206959644662085
 GameObject:
   m_ObjectHideFlags: 0
@@ -156,7 +170,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 3345139281879247746, guid: a54f081c1f7fd414b8074231151c55f9, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

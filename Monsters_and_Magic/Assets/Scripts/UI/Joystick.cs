@@ -1,46 +1,95 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
-// Этот скрипт вешается на базу джойстика. 
-// Он заставляет ручку двигаться и возвращает вектор направления.
-public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
+public class Joystick : MonoBehaviour, IDragHandler
 {
     [Header("Настройки джойстика")]
-    public RectTransform handle; 
-    public float handleRadius = 45f; 
+    public RectTransform handle;
+    public float handleRadius = 45f;
+    public CanvasGroup canvasGroup;
 
-    private Vector2 inputVector; 
+    private Vector2 inputVector;
+    private bool isActive = false;
 
-    // Свойство, чтобы другие скрипты (например, движение героя) могли читать направление
-    public Vector2 Direction
+    public Vector2 Direction { get { return inputVector; } }
+
+    private void Awake()
     {
-        get { return inputVector; }
+        if (canvasGroup != null)
+        {
+            canvasGroup.alpha = 0;
+            canvasGroup.interactable = false;
+            canvasGroup.blocksRaycasts = false;
+        }
+        handle.anchoredPosition = Vector2.zero;
     }
 
-    public void OnPointerDown(PointerEventData eventData)
+    private void Update()
     {
-        OnDrag(eventData);
+        if (!isActive && Input.GetMouseButtonDown(0))
+        {
+            this.transform.position = Input.mousePosition;
+
+            if (canvasGroup != null)
+            {
+                canvasGroup.alpha = 0.6f;
+                canvasGroup.interactable = true;
+                canvasGroup.blocksRaycasts = true;
+            }
+            isActive = true;
+
+            UpdateJoystickPosition(Input.mousePosition);
+        }
+
+        if (isActive && Input.GetMouseButton(0))
+        {
+            UpdateJoystickPosition(Input.mousePosition);
+        }
+
+        if (isActive && Input.GetMouseButtonUp(0))
+        {
+            ResetJoystick();
+        }
     }
 
-    public void OnDrag(PointerEventData eventData)
+    private void UpdateJoystickPosition(Vector2 screenPosition)
     {
         Vector2 position = Vector2.zero;
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
             (RectTransform)this.transform,
-            eventData.position,
-            eventData.pressEventCamera,
+            screenPosition,
+            null, 
             out position);
 
         position = Vector2.ClampMagnitude(position, handleRadius);
-
         handle.anchoredPosition = position;
-
         inputVector = position / handleRadius;
     }
 
-    public void OnPointerUp(PointerEventData eventData)
+    public void OnDrag(PointerEventData eventData)
+    {
+    }
+
+    private void ResetJoystick()
     {
         handle.anchoredPosition = Vector2.zero;
         inputVector = Vector2.zero;
+        isActive = false;
+
+        if (canvasGroup != null)
+        {
+            canvasGroup.alpha = 0;
+            canvasGroup.interactable = false;
+            canvasGroup.blocksRaycasts = false;
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (isActive)
+        {
+            ResetJoystick();
+        }
     }
 }
