@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class Joystick : MonoBehaviour, IDragHandler
+public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
 {
     [Header("Настройки джойстика")]
     public RectTransform handle;
@@ -10,86 +10,70 @@ public class Joystick : MonoBehaviour, IDragHandler
     public CanvasGroup canvasGroup;
 
     private Vector2 inputVector;
-    private bool isActive = false;
 
-    public Vector2 Direction { get { return inputVector; } }
+    public Vector2 Direction { get => inputVector; }
 
     private void Awake()
     {
         if (canvasGroup != null)
         {
-            canvasGroup.alpha = 0;
-            canvasGroup.interactable = false;
-            canvasGroup.blocksRaycasts = false;
+            canvasGroup.alpha = 0f;
+            canvasGroup.interactable = true;
+            canvasGroup.blocksRaycasts = true;
         }
-        handle.anchoredPosition = Vector2.zero;
+
+        if (handle != null)
+            handle.anchoredPosition = Vector2.zero;
+
+        inputVector = Vector2.zero;
     }
 
-    private void Update()
+    public void OnPointerDown(PointerEventData eventData)
     {
-        if (!isActive && Input.GetMouseButtonDown(0))
+        this.transform.position = eventData.position;
+
+        if (canvasGroup != null)
         {
-            this.transform.position = Input.mousePosition;
-
-            if (canvasGroup != null)
-            {
-                canvasGroup.alpha = 0.6f;
-                canvasGroup.interactable = true;
-                canvasGroup.blocksRaycasts = true;
-            }
-            isActive = true;
-
-            UpdateJoystickPosition(Input.mousePosition);
+            canvasGroup.alpha = 0.6f;
         }
 
-        if (isActive && Input.GetMouseButton(0))
-        {
-            UpdateJoystickPosition(Input.mousePosition);
-        }
-
-        if (isActive && Input.GetMouseButtonUp(0))
-        {
-            ResetJoystick();
-        }
-    }
-
-    private void UpdateJoystickPosition(Vector2 screenPosition)
-    {
-        Vector2 position = Vector2.zero;
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(
-            (RectTransform)this.transform,
-            screenPosition,
-            null, 
-            out position);
-
-        position = Vector2.ClampMagnitude(position, handleRadius);
-        handle.anchoredPosition = position;
-        inputVector = position / handleRadius;
+        OnDrag(eventData);
     }
 
     public void OnDrag(PointerEventData eventData)
     {
+        Vector2 position = Vector2.zero;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            (RectTransform)this.transform,
+            eventData.position,
+            eventData.pressEventCamera,
+            out position);
+
+        position = Vector2.ClampMagnitude(position, handleRadius);
+
+        if (handle != null)
+            handle.anchoredPosition = position;
+
+        inputVector = position / handleRadius;
     }
 
-    private void ResetJoystick()
+    public void OnPointerUp(PointerEventData eventData)
     {
-        handle.anchoredPosition = Vector2.zero;
+        if (handle != null)
+            handle.anchoredPosition = Vector2.zero;
+
         inputVector = Vector2.zero;
-        isActive = false;
 
         if (canvasGroup != null)
         {
-            canvasGroup.alpha = 0;
-            canvasGroup.interactable = false;
-            canvasGroup.blocksRaycasts = false;
+            canvasGroup.alpha = 0f;
         }
     }
 
     private void OnDisable()
     {
-        if (isActive)
-        {
-            ResetJoystick();
-        }
+        if (handle != null) handle.anchoredPosition = Vector2.zero;
+        inputVector = Vector2.zero;
+        if (canvasGroup != null) canvasGroup.alpha = 0f;
     }
 }
