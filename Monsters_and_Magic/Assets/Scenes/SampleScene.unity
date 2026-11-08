@@ -534,6 +534,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::HeroActor
   config: {fileID: 11400000, guid: 5eeedc2af99b4a37eac2e73e666e1454, type: 2}
   move: {fileID: 11400000, guid: d3a6c53161d485047b5eba9e44c52323, type: 2}
+  enemies: {fileID: 0}
+  turnSpeed: 720
 --- !u!50 &1067126530
 Rigidbody2D:
   serializedVersion: 5
@@ -684,11 +686,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6552177697179681991, guid: 4bab6cde7a61ff14fb99997abe1848f5, type: 3}
       propertyPath: m_Pivot.x
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 6552177697179681991, guid: 4bab6cde7a61ff14fb99997abe1848f5, type: 3}
       propertyPath: m_Pivot.y
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 6552177697179681991, guid: 4bab6cde7a61ff14fb99997abe1848f5, type: 3}
       propertyPath: m_AnchorMax.x
@@ -906,6 +908,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8800000101}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
